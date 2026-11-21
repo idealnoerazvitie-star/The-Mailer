@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f8fc" />
+  <title>The Mailer</title>
+  <style>
+    :root{--paper:#fff;--bg:#f6f8fc;--ink:#1f1f1f;--muted:#777b83;--line:#e5e7eb;--blue:#0b57d0;--pale:#d3e3fd;--sidebar:#edf2fa;--nav:#c2e7ff}
+    *{box-sizing:border-box} body{margin:0;font-family:Google Sans,Roboto,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    button,input,textarea{font:inherit} button{cursor:pointer;border:0;background:none;color:inherit}
+    .app{min-height:100vh}.topbar{height:64px;display:flex;align-items:center;padding:8px 16px;gap:16px}.menu{width:48px;height:48px;border-radius:50%;font-size:22px}.menu:hover,.icon:hover{background:#e8eaed}
+    .brand{display:flex;align-items:center;gap:9px;width:238px;font-size:22px;color:#444}.brand-mark{width:34px;height:26px;position:relative}.brand-mark:before{content:"";position:absolute;inset:1px;border:3px solid #ea4335;border-radius:4px}.brand-mark:after{content:"";position:absolute;left:5px;right:5px;top:-2px;height:19px;border-left:3px solid #4285f4;border-right:3px solid #4285f4;transform:skewY(34deg);opacity:.9}
+    .search{flex:1;max-width:720px;height:48px;background:#eaf1fb;border-radius:24px;display:flex;align-items:center;padding:0 16px}.search input{border:0;outline:0;background:transparent;width:100%;padding:12px}.search .icon{width:38px;height:38px;border-radius:50%;font-size:18px}
+    .top-actions{margin-left:auto;display:flex;align-items:center}.icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center}.avatar{width:36px;height:36px;border-radius:50%;background:#6750a4;color:white;margin-left:8px}
+    .layout{display:grid;grid-template-columns:256px 1fr;height:calc(100vh - 64px)}.sidebar{padding:8px 16px 16px}.compose{height:56px;border-radius:16px;background:#c2e7ff;padding:0 20px;display:flex;align-items:center;gap:12px;font-size:15px;font-weight:600;box-shadow:0 1px 2px #0001;margin:0 0 16px 8px}.compose:hover{box-shadow:0 2px 6px #0002}
+    .nav-item{height:38px;border-radius:0 20px 20px 0;display:flex;align-items:center;gap:16px;padding:0 16px;font-size:14px}.nav-item span:first-child{width:20px;text-align:center}.nav-item:hover{background:#e9eef6}.nav-item.active{background:var(--nav);font-weight:700}.nav-item .count{margin-left:auto;font-size:12px}.section-label{padding:20px 16px 8px;font-size:13px;font-weight:600}.profile-row{display:flex;align-items:center;gap:12px;padding:8px 16px}.profile-dot{width:28px;height:28px;border-radius:50%;background:#e8a87c}
+    .main{background:white;border-radius:16px 0 0 16px;overflow:hidden}.toolbar{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 14px}.toolbar-left{display:flex;align-items:center}.checkbox{width:18px;height:18px;border:2px solid #777;border-radius:2px;margin:0 10px}.tool{height:38px;padding:0 10px;border-radius:6px}.tool:hover{background:#f1f3f4}.spacer{flex:1}.mail-list{height:calc(100% - 48px);overflow:auto}.mail-row{height:56px;border-bottom:1px solid #edf0f2;display:grid;grid-template-columns:42px 28px 28px 190px 1fr 90px;align-items:center;padding:0 12px 0 6px;font-size:14px}.mail-row:hover{box-shadow:inset 1px 0 #ddd,inset -1px 0 #ddd,0 1px 3px #0002}.mail-row.unread{font-weight:700}.star{color:#c4c7c5}.star.on{color:#f9ab00}.sender{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.subject{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.subject span{color:#777;font-weight:400}.time{text-align:right;color:#777;font-size:12px}.unread .time{color:#1f1f1f}
+    .composer{position:fixed;right:24px;bottom:0;width:520px;height:580px;background:white;border-radius:10px 10px 0 0;box-shadow:0 4px 24px #0003;z-index:20;display:none;flex-direction:column}.composer.open{display:flex}.compose-head{height:42px;background:#f2f6fc;border-radius:10px 10px 0 0;display:flex;align-items:center;padding:0 14px;font-size:13px;font-weight:bold}.compose-head button{margin-left:auto;width:30px;height:30px}.compose-fields input{width:100%;height:48px;border:0;border-bottom:1px solid var(--line);padding:0 16px;outline:0}.compose-body{flex:1;border:0;resize:none;padding:16px;outline:0}.compose-footer{height:62px;padding:10px 12px;display:flex;align-items:center}.send{background:#0b57d0;color:white;border-radius:20px;height:38px;padding:0 20px;font-weight:600}.send:hover{background:#0842a0}.compose-footer .icon{margin-left:4px}.reader{display:none;height:calc(100% - 48px);padding:32px 48px;overflow:auto}.reader.open{display:block}.reader .back{margin:-10px 0 20px}.reader h1{font-size:24px;font-weight:400}.reader-meta{display:flex;align-items:center;gap:12px;margin-bottom:28px}.reader-avatar{width:40px;height:40px;border-radius:50%;background:#0b57d0;color:white;display:grid;place-items:center}.reader-body{line-height:1.7;max-width:760px}.hidden{display:none!important}
+    @media(max-width:800px){.layout{grid-template-columns:72px 1fr}.sidebar{padding:8px}.brand{width:auto}.brand-name{display:none}.search{max-width:none}.compose{width:56px;padding:0;margin:0 0 16px 8px}.compose-text,.nav-item span:last-child,.nav-item .count,.section-label,.profile-row{display:none}.nav-item{width:56px;border-radius:28px;padding:0;justify-content:center}.mail-row{grid-template-columns:38px 24px 150px 1fr 74px}.mail-row .star-cell{display:none}.composer{left:8px;right:8px;width:auto}.reader{padding:24px}.top-actions .icon:not(.avatar){display:none}}
+    @media(max-width:600px){.topbar{gap:4px;padding:8px}.layout{grid-template-columns:1fr}.sidebar{display:none}.main{border-radius:0}.top-actions{display:none}.brand{width:44px}.brand-mark{width:30px}.search{min-width:0}.mail-row{grid-template-columns:36px 1fr 72px}.mail-row .star-cell,.mail-row .sender{display:none}.mail-row .subject{padding:0 8px}.mail-row.unread{box-shadow:none}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar"><button class="menu" title="Main menu">☰</button><div class="brand"><div class="brand-mark"></div><span class="brand-name">The Mailer</span></div>
+    <div class="search"><button class="icon">⌕</button><input id="search" placeholder="Search mail" /><button class="icon">☷</button></div>
+    <div class="top-actions"><button class="icon">?</button><button class="icon">⚙</button><button class="avatar" title="Account">U</button></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <button class="compose" id="compose"><span>✎</span><span class="compose-text">Compose</span></button>
+      <nav>
+        <button class="nav-item active" data-folder="Inbox"><span>▰</span><span>Inbox</span><span class="count">3</span></button>
+        <button class="nav-item" data-folder="Starred"><span>☆</span><span>Starred</span></button>
+        <button class="nav-item" data-folder="Snoozed"><span>◷</span><span>Snoozed</span></button>
+        <button class="nav-item" data-folder="Sent"><span>➤</span><span>Sent</span></button>
+        <button class="nav-item" data-folder="Drafts"><span>▱</span><span>Drafts</span><span class="count">1</span></button>
+        <button class="nav-item" data-folder="More"><span>⌄</span><span>More</span></button>
+      </nav>
+      <div class="section-label">Labels <button style="float:right">＋</button></div>
+      <div class="profile-row"><div class="profile-dot"></div><span>Personal</span></div>
+    </aside>
+    <main class="main">
+      <div class="toolbar" id="toolbar"><div class="toolbar-left"><button class="checkbox" title="Select"></button><button class="tool">⌄</button><button class="tool" title="Refresh">↻</button><button class="tool" title="More">⋮</button></div><div class="spacer"></div><span style="font-size:12px;color:#777;margin-right:12px" id="range">1–6 of 6</span><button class="tool">‹</button><button class="tool">›</button></div>
+      <div class="mail-list" id="mailList"></div>
+      <section class="reader" id="reader"><button class="back tool" id="back">← Back to inbox</button><h1 id="readerSubject"></h1><div class="reader-meta"><div class="reader-avatar">A</div><div><strong id="readerSender"></strong><div style="font-size:12px;color:#777" id="readerTime"></div></div></div><div class="reader-body" id="readerBody"></div></section>
+    </main>
+  </div>
+</div>
+<div class="composer" id="composer"><div class="compose-head">New message <button id="closeCompose">×</button></div><div class="compose-fields"><input id="recipient" placeholder="Recipients" /><input id="composeSubject" placeholder="Subject" /></div><textarea class="compose-body" id="composeBody" placeholder="Write your message..."></textarea><div class="compose-footer"><button class="send" id="send">Send</button><button class="icon">A</button><button class="icon">📎</button><button class="icon">😊</button><div class="spacer"></div><button class="icon" title="Discard" id="discard">⌫</button></div></div>
+<script>
+const messages=[
+ {sender:"Ava Thompson",subject:"Project update and next steps",preview:"Here is the latest update for our project...",time:"10:42 AM",unread:true,star:false,body:"Hi,<br><br>The latest project update is ready. We completed the first review and have a clear plan for the next milestone.<br><br>Best,<br>Ava"},
+ {sender:"Google",subject:"Security alert",preview:"A new sign-in to your account was detected",time:"9:18 AM",unread:true,star:true,body:"A new sign-in to your The Mailer account was detected.<br><br>If this was you, no action is needed. If not, review your account security immediately."},
+ {sender:"Travel Desk",subject:"Your trip is confirmed",preview:"Your itinerary is ready for your upcoming trip",time:"Yesterday",unread:true,star:false,body:"Good news—your trip is confirmed.<br><br>You can find all travel details in your itinerary. We look forward to helping you have a great trip."},
+ {sender:"Maya Chen",subject:"Re: Design handoff",preview:"Thanks for sharing the final files!",time:"Yesterday",unread:false,star:true,body:"Thanks for sharing the final files! Everything looks polished. I’ll share feedback with the team this afternoon."},
+ {sender:"Linear",subject:"Issue ML-284 moved to Done",preview:"Maya completed an issue in the Mobile App project",time:"Nov 18",unread:false,star:false,body:"Issue ML-284 was moved to Done by Maya Chen.<br><br>The issue: Improve mailbox keyboard navigation."},
+ {sender:"Noah Williams",subject:"Coffee next week?",preview:"Are you free Tuesday or Wednesday afternoon?",time:"Nov 17",unread:false,star:false,body:"Hi! Are you free Tuesday or Wednesday afternoon next week? It would be great to catch up over coffee."}
+];
+let currentFolder="Inbox";
+const list=document.getElementById("mailList"),reader=document.getElementById("reader"),toolbar=document.getElementById("toolbar");
+function render(items=messages){list.innerHTML="";document.getElementById("range").textContent=`1–${items.length} of ${items.length}`;items.forEach((m,i)=>{const row=document.createElement("div");row.className="mail-row"+(m.unread?" unread":"");row.innerHTML=`<button class="checkbox"></button><button class="star star-cell ${m.star?"on":""}" title="Star">★</button><button class="icon star-cell">▫</button><div class="sender">${m.sender}</div><div class="subject">${m.subject} <span>— ${m.preview}</span></div><div class="time">${m.time}</div>`;row.querySelector(".sender").onclick=()=>openMail(m);row.querySelector(".subject").onclick=()=>openMail(m);row.querySelector(".star").onclick=e=>{e.stopPropagation();m.star=!m.star;render(currentFolder==="Starred"?messages.filter(x=>x.star):items)};row.querySelector(".checkbox").onclick=e=>e.stopPropagation();list.appendChild(row)})}
+function openMail(m){m.unread=false;list.classList.add("hidden");toolbar.classList.add("hidden");reader.classList.add("open");document.getElementById("readerSubject").textContent=m.subject;document.getElementById("readerSender").textContent=m.sender;document.getElementById("readerTime").textContent=m.time;document.getElementById("readerBody").innerHTML=m.body}
+document.getElementById("back").onclick=()=>{reader.classList.remove("open");list.classList.remove("hidden");toolbar.classList.remove("hidden")};
+document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{document.querySelector(".nav-item.active")?.classList.remove("active");b.classList.add("active");currentFolder=b.dataset.folder;document.getElementById("back").click();render(currentFolder=== "Starred"?messages.filter(m=>m.star):messages)});
+document.getElementById("search").oninput=e=>{const q=e.target.value.toLowerCase();render(messages.filter(m=>`${m.sender} ${m.subject} ${m.preview}`.toLowerCase().includes(q)))};
+const composer=document.getElementById("composer");document.getElementById("compose").onclick=()=>composer.classList.add("open");document.getElementById("closeCompose").onclick=()=>composer.classList.remove("open");document.getElementById("discard").onclick=()=>{composer.classList.remove("open");["recipient","composeSubject","composeBody"].forEach(id=>document.getElementById(id).value="")};
+document.getElementById("send").onclick=()=>{const recipient=document.getElementById("recipient").value.trim();if(!recipient){document.getElementById("recipient").focus();return}messages.unshift({sender:"Me",subject:document.getElementById("composeSubject").value||"(No subject)",preview:document.getElementById("composeBody").value.slice(0,45),time:"Now",unread:false,star:false,body:(document.getElementById("composeBody").value||"(No message content)").replace(/\n/g,"<br>")});document.getElementById("discard").click();render()};
+render();
+</script>
+</body>
+</html>
